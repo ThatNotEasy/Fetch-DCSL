@@ -1,0 +1,75 @@
+syntax = "proto2";
+
+package widevine;
+
+option go_package = "github.com/path/to/package;widevine";
+
+// Widevine Security Levels
+enum ProvisionedDeviceInfo_WvSecurityLevel {
+  LEVEL_UNSPECIFIED = 0;
+  LEVEL_1 = 1;
+  LEVEL_2 = 2;
+  LEVEL_3 = 3;
+}
+
+// Provisioning Methods
+enum ProvisionedDeviceInfo_ProvisioningMethod {
+  PROVISIONING_METHOD_UNSPECIFIED = 0;
+  FACTORY_KEYBOX = 1;
+  FACTORY_OEM_DEVICE_CERTIFICATE = 2;
+  FACTORY_OEM_GROUP_CERTIFICATE = 3;
+  FACTORY_DRM_GROUP_CERTIFICATE = 4;
+  OTA_KEYBOX = 5;
+  OTA_OEM_DEVICE_CERTIFICATE = 6;
+  OTA_OEM_GROUP_CERTIFICATE = 7;
+  OTA_DRM_DEVICE_CERTIFICATE = 8;
+}
+
+// Deprecated Status for Device Certificates
+enum DeviceCertificateStatus_DeprecatedStatus {
+  DEPRECATED_VALID = 0;
+  DEPRECATED_REVOKED = 1;
+}
+
+// Current Status for Device Certificates
+enum DeviceCertificateStatus_Status {
+  STATUS_UNKNOWN = 0;
+  STATUS_IN_TESTING = 10;
+  STATUS_RELEASED = 20;
+  STATUS_TEST_ONLY = 30;
+  STATUS_REVOKED = 40;
+}
+
+// Information about a provisioned device
+message ProvisionedDeviceInfo {
+  optional uint32 system_id = 1;
+  optional string soc = 2;
+  optional string manufacturer = 3;
+  optional string model = 4;
+  optional string device_type = 5;
+  optional uint32 model_year = 6;
+  optional ProvisionedDeviceInfo_WvSecurityLevel security_level = 7 [default = LEVEL_UNSPECIFIED];
+  optional bool test_device = 8 [default = false];
+  optional ProvisionedDeviceInfo_ProvisioningMethod provisioning_method = 9;
+}
+
+// Status of a device certificate
+message DeviceCertificateStatus {
+  optional bytes drm_serial_number = 1;
+  optional DeviceCertificateStatus_DeprecatedStatus deprecated_status = 2 [default = DEPRECATED_VALID];
+  optional ProvisionedDeviceInfo device_info = 4;
+  optional bytes oem_serial_number = 5;
+  optional DeviceCertificateStatus_Status status = 6 [default = STATUS_UNKNOWN];
+}
+
+// List of Device Certificate Statuses
+message DeviceCertificateStatusList {
+  optional uint32 creation_time_seconds = 1;
+  repeated DeviceCertificateStatus certificate_status = 2;
+}
+
+// Signed list of device certificate statuses
+message SignedDeviceCertificateStatusList {
+  optional DeviceCertificateStatusList certificate_status_list = 1;
+  optional bytes signature = 2;
+}
