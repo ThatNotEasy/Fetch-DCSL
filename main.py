@@ -25,7 +25,8 @@ class DcslResponse:
         self.signedList = signed_list
 
 def fetch_dcsl_data():
-    url = "https://www.googleapis.com/certificateprovisioning/v1/devicecertificatestatus/list?key=AIzaSyDMLcE1tgmHw8Eg5rUvrdPFgXT6VQl-rHQ" # CHANGE UR KEY
+    key = ""  # INPUT UR KEY
+    url = f"https://www.googleapis.com/certificateprovisioning/v1/devicecertificatestatus/list?key={key}"
     
     logger.debug(f"Sending POST request to {url}")
     response = requests.post(url, headers={"Content-Type": "application/x-www-form-urlencoded"})
